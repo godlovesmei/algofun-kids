@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  student
+  teacher
+  admin
+}
+
+enum QuestionType {
+  multiple_choice
+  drag_drop
+  story
+  true_false
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(student)
+  avatarUrl String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // relations
+  answers         Answer[]
+  progresses      Progress[]
+  chats           AIChat[]
+  recommendations AIRecommendation[]
+}
+
+model Material {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  level       Difficulty @default(easy)
+  contentUrl  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // relations
+  questions Question[]
+  progress  Progress[]
+}
+
+model Question {
+  id           String        @id @default(uuid())
+  materialId   String
+  type         QuestionType
+  questionText String
+  difficulty   Difficulty
+  createdAt    DateTime      @default(now())
+
+  // relations
+  material  Material  @relation(fields: [materialId], references: [id])
+  options   Option[]
+  answers   Answer[]
+  recommendedBy AIRecommendation[]
+}
+
+model Option {
+  id         String   @id @default(uuid())
+  questionId String
+  optionText String
+  isCorrect  Boolean  @default(false)
+
+  // relations
+  question Question @relation(fields: [questionId], references: [id])
+  answers  Answer[]
+}
+
+model Answer {
+  id             String   @id @default(uuid())
+  userId         String
+  questionId     String
+  selectedOption String?  // FK ke Option.id
+  answerText     String?
+  isCorrect      Boolean?
+  createdAt      DateTime @default(now())
+
+  // relations
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+  option   Option?  @relation(fields: [selectedOption], references: [id])
+}
+
+model Progress {
+  id          String   @id @default(uuid())
+  userId      String
+  materialId  String
+  score       Int?
+  completed   Boolean  @default(false)
+  lastAccessed DateTime @default(now())
+
+  // relations
+  user     User     @relation(fields: [userId], references: [id])
+  material Material @relation(fields: [materialId], references: [id])
+}
+
+model AIChat {
+  id        String   @id @default(uuid())
+  userId    String
+  role      String   // "user" | "assistant"
+  message   String
+  createdAt DateTime @default(now())
+
+  // relations
+  user User @relation(fields: [userId], references: [id])
+}
+
+model AIRecommendation {
+  id         String   @id @default(uuid())
+  userId     String
+  questionId String
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  // relations
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+}
