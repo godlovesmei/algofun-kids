@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -43,25 +45,95 @@ const buttonVariants = cva(
     }
 );
 
-function Button({
-    className,
-    variant,
-    size,
-    asChild = false,
-    ...props
-}: React.ComponentProps<'button'> &
-    VariantProps<typeof buttonVariants> & {
-        asChild?: boolean;
-    }) {
-    const Comp = asChild ? Slot : 'button';
-
-    return (
-        <Comp
-            data-slot="button"
-            className={cn(buttonVariants({ variant, size, className }))}
-            {...props}
-        />
-    );
+// Type definition untuk props Button
+interface ButtonProps
+    extends React.ComponentProps<'button'>,
+        VariantProps<typeof buttonVariants> {
+    asChild?: boolean;
+    playSound?: boolean;
+    soundUrl?: string; // Opsi untuk custom sound
 }
 
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+    (
+        {
+            className,
+            variant,
+            size,
+            asChild = false,
+            playSound = true,
+            soundUrl = '/sounds/click.wav',
+            ...props
+        },
+        ref
+    ) => {
+        const Comp = asChild ? Slot : 'button';
+
+        // Ref untuk audio
+        const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+        // Initialize audio
+        React.useEffect(() => {
+            if (playSound && typeof window !== 'undefined') {
+                audioRef.current = new Audio(soundUrl);
+                audioRef.current.preload = 'auto';
+                audioRef.current.volume = 0.3; // Volume lebih rendah agar tidak terlalu keras
+
+                // Optional: preload audio
+                audioRef.current.load();
+            }
+
+            // Cleanup
+            return () => {
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                    audioRef.current = null;
+                }
+            };
+        }, [playSound, soundUrl]);
+
+        const handleClick = async (
+            e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        ) => {
+            // Play sound jika enabled
+            if (playSound && audioRef.current) {
+                try {
+                    // Reset ke awal dan play
+                    audioRef.current.currentTime = 0;
+                    const playPromise = audioRef.current.play();
+
+                    // Handle promise (browser modern mengembalikan promise)
+                    if (playPromise !== undefined) {
+                        await playPromise.catch((error) => {
+                            // Ignore autoplay policy errors
+                            console.warn('Audio play failed:', error);
+                        });
+                    }
+                } catch (error) {
+                    // Ignore errors (misal user belum interaksi dengan halaman)
+                    console.warn('Audio play error:', error);
+                }
+            }
+
+            // Call original onClick handler
+            if (props.onClick) {
+                props.onClick(e);
+            }
+        };
+
+        return (
+            <Comp
+                ref={ref}
+                data-slot="button"
+                className={cn(buttonVariants({ variant, size }), className)}
+                {...props}
+                onClick={handleClick}
+            />
+        );
+    }
+);
+
+Button.displayName = 'Button';
+
 export { Button, buttonVariants };
+export type { ButtonProps };

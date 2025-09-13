@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -14,129 +13,554 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  student
-  teacher
-  admin
-}
-
-enum QuestionType {
-  multiple_choice
-  drag_drop
-  story
-  true_false
-}
-
-enum Difficulty {
-  easy
-  medium
-  hard
-}
+// ==================== USER MANAGEMENT ====================
 
 model User {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  role      Role      @default(student)
-  avatarUrl String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String   @id @default(cuid())
+  username    String   @unique
+  name        String
+  avatar      String?  // Avatar karakter yang dipilih anak
+  parentEmail String?  // Email orangtua untuk monitoring
+  grade       Grade    @default(GRADE_1)
+  age         Int?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  // relations
-  answers         Answer[]
-  progresses      Progress[]
-  chats           AIChat[]
-  recommendations AIRecommendation[]
+  // Profile pembelajaran anak
+  kidProfile      KidProfile?
+  
+  // Progress dan aktivitas
+  gameProgress    GameProgress[]
+  storyProgress   StoryProgress[]
+  submissions     PuzzleSubmission[]
+  achievements    KidAchievement[]
+  
+  // Parent-child relationship
+  children        User[] @relation("ParentChild")
+  parent          User?  @relation("ParentChild", fields: [parentId], references: [id])
+  parentId        String?
+  
+  // AI interactions
+  aiChats         AIChat[]
+  recommendations KidRecommendation[]
+
+  @@map("users")
 }
 
-model Material {
-  id          String     @id @default(uuid())
-  title       String
-  description String?
-  level       Difficulty @default(easy)
-  contentUrl  String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+model KidProfile {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Informasi dasar anak
+  favoriteColor   String?
+  favoriteAnimal  String?
+  hobbies         String[]
+  
+  // ZPD untuk anak SD - lebih sederhana
+  currentLevel    KidLevel      @default(BEGINNER)
+  logicSkill      Int           @default(1)      // Level 1-10
+  patternSkill    Int           @default(1)      // Level 1-10
+  problemSolving  Int           @default(1)      // Level 1-10
+  
+  // Preferensi belajar anak
+  learningStyle   KidLearningStyle @default(VISUAL_GAMES)
+  attentionSpan   Int           @default(15)     // dalam menit
+  preferredTime   String?       // "morning", "afternoon", "evening"
+  
+  // Motivasi dan rewards
+  favoriteReward  RewardType    @default(STICKERS)
+  totalStickers   Int           @default(0)
+  totalStars      Int           @default(0)
+  totalCoins      Int           @default(0)
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  // relations
-  questions Question[]
-  progress  Progress[]
+  @@map("kid_profiles")
 }
 
-model Question {
-  id           String        @id @default(uuid())
-  materialId   String
-  type         QuestionType
-  questionText String
-  difficulty   Difficulty
-  createdAt    DateTime      @default(now())
+// ==================== LEARNING CONTENT FOR KIDS ====================
 
-  // relations
-  material  Material  @relation(fields: [materialId], references: [id])
-  options   Option[]
-  answers   Answer[]
-  recommendedBy AIRecommendation[]
+model World {
+  id          String    @id @default(cuid())
+  name        String    // "Dunia Angka", "Pulau Pola", "Hutan Logika"
+  description String
+  theme       String    // "numbers", "patterns", "logic", "shapes"
+  color       String    // Warna tema dunia
+  icon        String    // Icon/mascot dunia
+  
+  // Urutan dunia
+  sortOrder   Int       @default(0)
+  isUnlocked  Boolean   @default(false)  // Unlocked by default untuk world pertama
+  
+  // Konten dunia
+  stories     Story[]
+  games       Game[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("worlds")
 }
 
-model Option {
-  id         String   @id @default(uuid())
-  questionId String
-  optionText String
-  isCorrect  Boolean  @default(false)
+model Story {
+  id              String          @id @default(cuid())
+  title           String
+  description     String
+  content         Json            // Cerita dengan karakter, dialog, dll
+  
+  worldId         String
+  world           World           @relation(fields: [worldId], references: [id])
+  
+  // Pengaturan cerita
+  ageGroup        AgeGroup        @default(AGE_6_8)
+  estimatedTime   Int             @default(10)    // dalam menit
+  hasNarration    Boolean         @default(true)  // Ada suara narrator
+  illustrations   String[]        // URL gambar-gambar cerita
+  
+  // Learning objectives untuk anak
+  skillsFocus     String[]        // ["counting", "patterns", "logic"]
+  concepts        String[]        // Konsep yang diajarkan
+  
+  // Konten interaktif
+  games           Game[]
+  
+  // Progress tracking
+  storyProgress   StoryProgress[]
+  
+  sortOrder       Int             @default(0)
+  isPublished     Boolean         @default(false)
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
-  // relations
-  question Question @relation(fields: [questionId], references: [id])
-  answers  Answer[]
+  @@map("stories")
 }
 
-model Answer {
-  id             String   @id @default(uuid())
-  userId         String
-  questionId     String
-  selectedOption String?  // FK ke Option.id
-  answerText     String?
-  isCorrect      Boolean?
-  createdAt      DateTime @default(now())
+model Game {
+  id              String            @id @default(cuid())
+  title           String
+  description     String
+  type            GameType
+  
+  worldId         String?
+  world           World?            @relation(fields: [worldId], references: [id])
+  storyId         String?
+  story           Story?            @relation(fields: [storyId], references: [id])
+  
+  // Game configuration
+  ageGroup        AgeGroup          @default(AGE_6_8)
+  difficulty      KidDifficulty     @default(EASY)
+  maxTime         Int?              // dalam menit (optional time limit)
+  
+  // Game data - fleksibel untuk berbagai jenis game
+  gameData        Json              // Rules, objects, configurations
+  
+  // Visual & Audio
+  backgroundMusic String?
+  soundEffects    String[]
+  animations      Json?
+  
+  // Rewards
+  starsReward     Int               @default(1)
+  coinsReward     Int               @default(5)
+  stickersReward  String[]          // Stiker yang bisa didapat
+  
+  // Tracking
+  gameProgress    GameProgress[]
+  submissions     PuzzleSubmission[]
+  
+  isActive        Boolean           @default(true)
+  sortOrder       Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
-  // relations
-  user     User     @relation(fields: [userId], references: [id])
-  question Question @relation(fields: [questionId], references: [id])
-  option   Option?  @relation(fields: [selectedOption], references: [id])
+  @@map("games")
 }
 
-model Progress {
-  id          String   @id @default(uuid())
-  userId      String
-  materialId  String
-  score       Int?
-  completed   Boolean  @default(false)
-  lastAccessed DateTime @default(now())
+// ==================== PROGRESS TRACKING ====================
 
-  // relations
-  user     User     @relation(fields: [userId], references: [id])
-  material Material @relation(fields: [materialId], references: [id])
+model StoryProgress {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storyId         String
+  story           Story       @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  
+  // Progress
+  currentChapter  Int         @default(1)
+  isCompleted     Boolean     @default(false)
+  timeSpent       Int         @default(0)      // dalam detik
+  
+  // Engagement metrics untuk anak
+  attentionScore  Float       @default(0)      // 0-1 seberapa fokus anak
+  enjoymentScore  Int?        // 1-5 rating dari anak (emoji scale)
+  
+  startedAt       DateTime?
+  completedAt     DateTime?
+  lastReadAt      DateTime    @default(now())
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@unique([userId, storyId])
+  @@map("story_progress")
 }
+
+model GameProgress {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId          String
+  game            Game          @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  // Progress metrics untuk anak
+  level           Int           @default(1)
+  score           Int           @default(0)
+  bestScore       Int           @default(0)
+  stars           Int           @default(0)       // 0-3 stars
+  isCompleted     Boolean       @default(false)
+  
+  // Time tracking
+  timeSpent       Int           @default(0)       // dalam detik
+  sessionsCount   Int           @default(0)       // Berapa kali main
+  
+  // Learning metrics (ZPD)
+  difficultyRating Float        @default(0)       // 0-1 seberapa sulit menurut AI
+  helpRequested   Int           @default(0)       // Berapa kali minta hint
+  mistakeCount    Int           @default(0)       // Jumlah kesalahan
+  
+  // Engagement
+  funRating       Int?          // 1-5 seberapa seru menurut anak
+  
+  firstPlayedAt   DateTime?
+  lastPlayedAt    DateTime      @default(now())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([userId, gameId])
+  @@map("game_progress")
+}
+
+model PuzzleSubmission {
+  id              String           @id @default(cuid())
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId          String
+  game            Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  // Jawaban anak
+  answer          Json             // Jawaban dalam format yang fleksibel
+  isCorrect       Boolean          @default(false)
+  attempts        Int              @default(1)
+  hintsUsed       Int              @default(0)
+  
+  // Time tracking
+  timeToSolve     Int?             // dalam detik
+  
+  // AI feedback untuk anak (dalam bahasa sederhana)
+  feedback        String?
+  encouragement   String?          // Kata-kata semangat
+  nextSuggestion  String?          // Saran aktivitas berikutnya
+  
+  createdAt       DateTime         @default(now())
+
+  @@map("puzzle_submissions")
+}
+
+// ==================== AI FOR KIDS ====================
 
 model AIChat {
-  id        String   @id @default(uuid())
-  userId    String
-  role      String   // "user" | "assistant"
-  message   String
-  createdAt DateTime @default(now())
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Chat dengan AI assistant untuk anak
+  kidMessage      String
+  aiResponse      String
+  context         Json?       // Context dari game/story yang sedang dimain
+  
+  // Metadata
+  aiPersonality   String      @default("friendly_teacher")  // Kepribadian AI
+  responseType    String      // "help", "explanation", "encouragement"
+  
+  createdAt       DateTime    @default(now())
 
-  // relations
-  user User @relation(fields: [userId], references: [id])
+  @@map("ai_chats")
 }
 
-model AIRecommendation {
-  id         String   @id @default(uuid())
-  userId     String
-  questionId String
-  reason     String?
-  createdAt  DateTime @default(now())
+model KidRecommendation {
+  id              String                  @id @default(cuid())
+  userId          String
+  user            User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type            KidRecommendationType
+  title           String
+  description     String                  // Dalam bahasa yang mudah dipahami anak
+  
+  // Target rekomendasi
+  targetType      String                  // "story", "game", "world"
+  targetId        String
+  
+  // Visual untuk anak
+  icon            String?
+  color           String?
+  animation       String?                 // Animasi kecil untuk menarik perhatian
+  
+  // ZPD context untuk anak
+  skillMatch      Float                   // 0-1 seberapa cocok dengan kemampuan anak
+  funFactor       Float                   // 0-1 seberapa menyenangkan menurut AI
+  reasoning       String                  // Alasan dalam bahasa anak-anak
+  
+  // Status
+  status          KidRecommendationStatus @default(NEW)
+  viewedAt        DateTime?
+  playedAt        DateTime?
+  
+  expiresAt       DateTime?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
 
-  // relations
-  user     User     @relation(fields: [userId], references: [id])
-  question Question @relation(fields: [questionId], references: [id])
+  @@map("kid_recommendations")
+}
+
+// ==================== GAMIFICATION FOR KIDS ====================
+
+model Achievement {
+  id              String            @id @default(cuid())
+  name            String
+  description     String            // Deskripsi untuk anak
+  icon            String            // Icon lucu untuk achievement
+  category        AchievementCategory
+  
+  // Kondisi mendapatkan achievement (sederhana untuk anak)
+  requirement     Json              // Syarat yang mudah dipahami
+  reward          Json              // Hadiah yang didapat
+  
+  kidAchievements KidAchievement[]
+  
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("achievements")
+}
+
+model KidAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  
+  progress      Int         @default(0)        // Progress dalam angka yang mudah dipahami
+  maxProgress   Int         @default(100)
+  isUnlocked    Boolean     @default(false)
+  unlockedAt    DateTime?
+  
+  // Celebration data
+  wasCelebrated Boolean     @default(false)    // Apakah sudah ada animasi celebration
+  
+  createdAt     DateTime    @default(now())
+
+  @@unique([userId, achievementId])
+  @@map("kid_achievements")
+}
+
+model Sticker {
+  id          String        @id @default(cuid())
+  name        String
+  image       String        // URL gambar stiker
+  category    StickerCategory
+  rarity      StickerRarity @default(COMMON)
+  
+  // Stiker collection
+  userStickers UserSticker[]
+  
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+
+  @@map("stickers")
+}
+
+model UserSticker {
+  id        String   @id @default(cuid())
+  userId    String
+  stickerId String
+  sticker   Sticker  @relation(fields: [stickerId], references: [id])
+  
+  quantity  Int      @default(1)     // Berapa banyak stiker ini yang dimiliki
+  earnedAt  DateTime @default(now())
+
+  @@unique([userId, stickerId])
+  @@map("user_stickers")
+}
+
+// ==================== PARENT DASHBOARD ====================
+
+model ParentReport {
+  id              String   @id @default(cuid())
+  childId         String
+  reportDate      DateTime @db.Date
+  
+  // Daily metrics
+  playTimeMinutes Int      @default(0)
+  gamesPlayed     Int      @default(0)
+  storiesRead     Int      @default(0)
+  newSkillsLearned String[]
+  
+  // Progress metrics
+  skillImprovements Json   // Peningkatan di berbagai skill
+  challengesFaced   String[] // Tantangan yang dihadapi anak
+  achievements      String[] // Achievement yang didapat hari ini
+  
+  // Recommendations for parents
+  parentTips      String[] // Tips untuk orangtua
+  nextActivities  String[] // Aktivitas yang disarankan
+  
+  createdAt       DateTime @default(now())
+
+  @@unique([childId, reportDate])
+  @@map("parent_reports")
+}
+
+// ==================== ANALYTICS ====================
+
+model KidActivity {
+  id          String         @id @default(cuid())
+  userId      String
+  
+  // Activity details (simplified for kids)
+  action      KidActivityType
+  entityType  String         // "game", "story", "sticker"
+  entityId    String?
+  duration    Int?           // dalam detik
+  
+  // Context
+  sessionId   String?
+  deviceType  String?        // "tablet", "computer", "phone"
+  
+  createdAt   DateTime       @default(now())
+
+  @@index([userId, createdAt])
+  @@map("kid_activities")
+}
+
+// ==================== ENUMS ====================
+
+enum Grade {
+  GRADE_1
+  GRADE_2
+  GRADE_3
+  GRADE_4
+  GRADE_5
+  GRADE_6
+}
+
+enum KidLevel {
+  BEGINNER      // Baru mulai
+  EXPLORER      // Suka mengeksplorasi
+  PROBLEM_SOLVER // Mulai bisa memecahkan masalah
+  LOGIC_MASTER  // Jago logika
+}
+
+enum KidLearningStyle {
+  VISUAL_GAMES    // Suka game dengan gambar
+  STORY_BASED     // Suka belajar lewat cerita
+  HANDS_ON        // Suka aktivitas interaktif
+  PUZZLE_LOVER    // Suka teka-teki
+}
+
+enum RewardType {
+  STICKERS
+  STARS
+  COINS
+  BADGES
+  VIRTUAL_PETS
+}
+
+enum AgeGroup {
+  AGE_6_7
+  AGE_6_8
+  AGE_8_10
+  AGE_10_12
+}
+
+enum GameType {
+  PATTERN_MATCHING    // Mencocokkan pola
+  SEQUENCE_BUILDING   // Membangun urutan
+  LOGIC_PUZZLE        // Teka-teki logika
+  NUMBER_GAME         // Permainan angka
+  SHAPE_SORTING       // Mengurutkan bentuk
+  MEMORY_CHALLENGE    // Tantangan memori
+  STORY_INTERACTIVE   // Cerita interaktif
+}
+
+enum KidDifficulty {
+  SUPER_EASY
+  EASY
+  MEDIUM
+  CHALLENGING
+}
+
+enum KidRecommendationType {
+  NEXT_GAME
+  NEW_STORY
+  SKILL_PRACTICE
+  FUN_CHALLENGE
+  REVIEW_ACTIVITY
+}
+
+enum KidRecommendationStatus {
+  NEW
+  SEEN
+  PLAYED
+  LOVED      // Anak sangat suka
+  SKIPPED
+}
+
+enum AchievementCategory {
+  FIRST_STEPS     // Achievement pertama kali
+  SKILL_BUILDER   // Membangun kemampuan
+  PERSISTENCE     // Kegigihan
+  CREATIVITY      // Kreativitas
+  HELPING_OTHERS  // Membantu teman
+  DAILY_LEARNER   // Belajar rutin
+}
+
+enum StickerCategory {
+  ANIMALS
+  NATURE
+  SPACE
+  FANTASY
+  FOOD
+  TOYS
+  EMOTIONS
+}
+
+enum StickerRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum KidActivityType {
+  GAME_START
+  GAME_COMPLETE
+  GAME_PAUSE
+  GAME_RESUME
+  STORY_READ
+  PUZZLE_SOLVE
+  STICKER_EARN
+  ACHIEVEMENT_UNLOCK
+  HELP_REQUEST
+  HINT_USED
+  MISTAKE_MADE
+  PERFECT_COMPLETION
+  BREAK_TIME
+  DRAG_ACTION
+  CLICK_ACTION
+  UNDO_ACTION
 }

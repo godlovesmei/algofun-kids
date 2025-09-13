@@ -17,7 +17,7 @@ const Header = () => {
 
                 {/* Actions: Theme Toggle + Button */}
                 <div className="flex items-center gap-x-4">
-                    <Button size="lg" variant="secondary">
+                    <Button size="lg" variant="super">
                         Mulai
                     </Button>
                 </div>

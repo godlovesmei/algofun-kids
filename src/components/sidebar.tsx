@@ -34,6 +34,11 @@ export const Sidebar = ({ className }: Props) => {
                     iconSrc="/assets/home.png"
                 />
                 <SidebarItem
+                    label="LATIHAN"
+                    href="/practice"
+                    iconSrc="/assets/practice.png"
+                />
+                <SidebarItem
                     label="TANYA AI"
                     href="/ask-ai"
                     iconSrc="/assets/artificial-intelligence.png"
