@@ -1,63 +1,68 @@
 'use client';
 
 import React, { useState } from 'react';
-import Header from './header';
-import Footer from './footer';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import DuolingoMascot from '@/components/mascot';
+import OptionCard from '@/components/option-card';
 
-// Contoh pertanyaan & opsi
-const question = {
-    avatar: '/duo.png', // ganti ke asset kamu
-    text: 'Bagaimana kamu mendengar tentang aplikasi ini?',
-    options: [
-        { icon: '📺', label: 'TV' },
-        { icon: '🧑‍🤝‍🧑', label: 'Teman/Keluarga' },
-        { icon: '🎶', label: 'TikTok' },
-        { icon: '📸', label: 'Instagram/Facebook' },
-        { icon: '▶️', label: 'YouTube' },
-        { icon: '📰', label: 'Artikel/Blog' },
-        { icon: '🔍', label: 'Google Search' },
-        { icon: '…', label: 'Lainnya' },
-    ],
-};
+const HomePage: React.FC = () => {
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-export default function OnboardingPage() {
-    const [selected, setSelected] = useState<number | null>(null);
+    const options = [
+        { id: 'fun', icon: '🎉', title: 'Just for fun' },
+        { id: 'travel', icon: '✈️', title: 'Prepare for travel' },
+        { id: 'career', icon: '💼', title: 'Boost my career' },
+        { id: 'education', icon: '📚', title: 'Support my education' },
+        { id: 'connect', icon: '👥', title: 'Connect with people' },
+        { id: 'productive', icon: '🧠', title: 'Spend time productively' },
+        { id: 'other', icon: '💬', title: 'Other' },
+    ];
+
+    const handleOptionClick = (optionId: string) => {
+        setSelectedOption(optionId);
+    };
+
+    const handleContinue = () => {
+        if (selectedOption) {
+            console.log('Selected option:', selectedOption);
+            // Handle continue logic here
+        }
+    };
+
+    const handleBack = () => {
+        console.log('Back button clicked');
+        // Handle back navigation
+    };
 
     return (
-        <div className="flex flex-col flex-1">
-            <Header step={1} total={1} />
-            <div className="flex flex-col items-center flex-1 justify-center">
-                <Image
-                    src={question.avatar}
-                    alt="Avatar"
-                    width={80}
-                    height={80}
-                    className="rounded-full mb-4 border-4 border-green-300 bg-white"
-                />
-                <div className="text-xl font-semibold mb-8 bg-white rounded-lg py-2 px-4 border inline-block shadow-sm">
-                    {question.text}
-                </div>
-                <div className="grid grid-cols-2 gap-4 w-full max-w-xl mb-10">
-                    {question.options.map((opt, idx) => (
-                        <Button
-                            key={idx}
-                            variant={selected === idx ? 'primary' : 'default'}
-                            size="lg"
-                            className="justify-start"
-                            onClick={() => setSelected(idx)}
-                        >
-                            <span className="text-2xl">{opt.icon}</span>
-                            <span>{opt.label}</span>
-                        </Button>
+        <div className="min-h-screen bg-gray-50 pb-24">
+            <Header progress={25} onBack={handleBack} />
+
+            <div className="max-w-lg mx-auto px-4 py-8">
+                <DuolingoMascot />
+
+                <div className="space-y-3">
+                    {options.map((option) => (
+                        <OptionCard
+                            key={option.id}
+                            icon={option.icon}
+                            title={option.title}
+                            isSelected={selectedOption === option.id}
+                            onClick={() => handleOptionClick(option.id)}
+                            className={
+                                option.id === 'career'
+                                    ? 'bg-blue-50 border-blue-200'
+                                    : ''
+                            }
+                        />
                     ))}
                 </div>
             </div>
-            <Footer
-                disabled={selected === null}
-                onContinue={() => alert('Lanjut!')}
-            />
+
+            <Footer onContinue={handleContinue} isDisabled={!selectedOption} />
         </div>
     );
-}
+};
+
+export default HomePage;
