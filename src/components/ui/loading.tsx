@@ -1,5 +1,12 @@
-import { useState, useEffect } from 'react';
+import {
+    useState,
+    useEffect,
+    type ButtonHTMLAttributes,
+    type ReactNode,
+} from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+type LoaderType = 'spinner' | 'dots' | 'pulse' | 'wave' | 'lottie';
 
 // 1. Custom CSS/Framer Motion Loaders
 const SpinnerLoader = () => (
@@ -79,7 +86,7 @@ const WaveLoader = () => (
     </div>
 );
 
-const CircleProgressLoader = ({ progress = 75 }) => (
+const CircleProgressLoader = ({ progress = 75 }: { progress?: number }) => (
     <div className="relative w-16 h-16">
         <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
             <circle
@@ -121,18 +128,14 @@ const CircleProgressLoader = ({ progress = 75 }) => (
 const LottieLoader = ({
     animationUrl = '/animations/loading.json',
     size = 120,
+}: {
+    animationUrl?: string;
+    size?: number;
 }) => {
-    const [animationData, setAnimationData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulasi load Lottie animation
         const timer = setTimeout(() => {
-            // Di real app, ini akan fetch actual Lottie file
-            setAnimationData({
-                // Mock animation data
-                mock: true,
-            });
             setLoading(false);
         }, 1000);
 
@@ -156,8 +159,16 @@ const LottieLoader = ({
 };
 
 // 3. Full Screen Loader Overlay
-const FullScreenLoader = ({ isLoading, children, loaderType = 'pulse' }) => {
-    const loaderComponents = {
+const FullScreenLoader = ({
+    isLoading,
+    children,
+    loaderType = 'pulse',
+}: {
+    isLoading: boolean;
+    children: ReactNode;
+    loaderType?: LoaderType;
+}) => {
+    const loaderComponents: Record<LoaderType, ReactNode> = {
         spinner: <SpinnerLoader />,
         dots: <DotsLoader />,
         pulse: <PulseLoader />,
@@ -199,10 +210,21 @@ const FullScreenLoader = ({ isLoading, children, loaderType = 'pulse' }) => {
 };
 
 // 4. Loading Button
-const LoadingButton = ({ loading, children, onClick, ...props }) => (
+type LoadingButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+    loading: boolean;
+    children: ReactNode;
+};
+
+const LoadingButton = ({
+    loading,
+    children,
+    onClick,
+    disabled,
+    ...props
+}: LoadingButtonProps) => (
     <button
         onClick={onClick}
-        disabled={loading}
+        disabled={loading || disabled}
         className="relative px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         {...props}
     >

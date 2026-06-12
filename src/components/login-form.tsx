@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,16 +12,25 @@ export function LoginForm({
 }: React.ComponentProps<'div'>) {
     return (
         <div className={cn('flex flex-col gap-6', className)} {...props}>
-            <Card className="overflow-hidden p-0">
+            <Card className="overflow-hidden border-2 border-sky-100 bg-white/95 p-0 shadow-xl">
                 <CardContent className="grid p-0 md:grid-cols-2">
                     <form className="p-6 md:p-8">
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col items-center text-center">
-                                <h1 className="text-2xl font-bold">
-                                    Welcome back
+                                <Image
+                                    src="/assets/algofun-logo.png"
+                                    alt="AlgoFun Kids"
+                                    width={156}
+                                    height={58}
+                                    className="mb-2"
+                                    priority
+                                />
+                                <h1 className="text-2xl font-extrabold text-slate-800">
+                                    Selamat datang lagi
                                 </h1>
-                                <p className="text-muted-foreground text-balance">
-                                    Login to your Acme Inc account
+                                <p className="text-balance text-sm text-slate-500">
+                                    Masuk untuk melanjutkan misi logika dan
+                                    mengumpulkan XP hari ini.
                                 </p>
                             </div>
                             <div className="grid gap-3">
@@ -28,32 +38,38 @@ export function LoginForm({
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="m@example.com"
+                                    placeholder="nama@email.com"
+                                    className="h-12 rounded-2xl border-2"
                                     required
                                 />
                             </div>
                             <div className="grid gap-3">
                                 <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    <a
+                                    <Label htmlFor="password">Kata sandi</Label>
+                                    <Link
                                         href="#"
-                                        className="ml-auto text-sm underline-offset-2 hover:underline"
+                                        className="ml-auto text-sm font-bold text-sky-500 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
                                     >
-                                        Forgot your password?
-                                    </a>
+                                        Lupa?
+                                    </Link>
                                 </div>
-                                <Input id="password" type="password" required />
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    className="h-12 rounded-2xl border-2"
+                                    required
+                                />
                             </div>
                             <Button
                                 type="submit"
-                                variant="default"
-                                className="w-full"
+                                variant="secondary"
+                                className="h-12 w-full"
                             >
-                                Login
+                                Masuk
                             </Button>
                             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                                    Or continue with
+                                <span className="relative z-10 bg-white px-2 text-slate-500">
+                                    Atau lanjut dengan
                                 </span>
                             </div>
                             <div className="grid grid-cols-3 gap-4">
@@ -113,31 +129,32 @@ export function LoginForm({
                                 </Button>
                             </div>
                             <div className="text-center text-sm">
-                                Don&apos;t have an account?{' '}
-                                <a
-                                    href="#"
-                                    className="underline underline-offset-4"
+                                Belum punya akun?{' '}
+                                <Link
+                                    href="/welcome"
+                                    className="font-bold text-sky-500 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
                                 >
-                                    Sign up
-                                </a>
+                                    Mulai dari sini
+                                </Link>
                             </div>
                         </div>
                     </form>
-                    <div className="bg-muted relative hidden md:block">
+                    <div className="relative hidden overflow-hidden bg-gradient-to-br from-sky-100 via-yellow-50 to-green-100 md:block">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(250,204,21,0.35),transparent_30%),radial-gradient(circle_at_75%_70%,rgba(56,189,248,0.35),transparent_32%)]" />
                         <Image
-                            src="\assets\algofun-logo.svg"
-                            alt="Image"
-                            className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-                            width={100}
-                            height={100}
+                            src="/assets/brain-smile.png"
+                            alt="Maskot belajar AlgoFun"
+                            className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-2xl"
+                            width={176}
+                            height={176}
                         />
                     </div>
                 </CardContent>
             </Card>
             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-                By clicking continue, you agree to our{' '}
-                <a href="#">Terms of Service</a> and{' '}
-                <a href="#">Privacy Policy</a>.
+                Dengan melanjutkan, kamu menyetujui{' '}
+                <Link href="#">Ketentuan Layanan</Link> dan{' '}
+                <Link href="#">Kebijakan Privasi</Link>.
             </div>
         </div>
     );

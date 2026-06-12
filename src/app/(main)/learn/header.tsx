@@ -8,16 +8,18 @@ type Props = {
 
 export const Header = ({ title }: Props) => {
     return (
-        <div className="sticky top-0 bg-white pb-3 lg:pt-[28px] flex items-center justify-between border-b mb-5 lg:z-50 text-neutral-400">
+        <div className="sticky top-16 z-40 mb-5 flex items-center justify-between rounded-3xl border-2 border-sky-100 bg-white/95 px-3 py-3 text-slate-500 shadow-sm backdrop-blur lg:top-6">
             <Link href="/courses">
-                <Button variant="ghost" size="sm">
-                    <ArrowLeft className="h-5 w-5 stroke-2 text-neutral-400" />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Kembali ke daftar materi"
+                >
+                    <ArrowLeft className="h-5 w-5 stroke-2 text-slate-400" />
                 </Button>
             </Link>
-            <h1 className="font-bold text-lg text-neutral-400">{title}</h1>
-            {/* Empty div to balance flex and keep title centered */}
-            <div style={{ width: 40, height: 40 }} />{' '}
-            {/* Same as Button size */}
+            <h1 className="text-lg font-extrabold text-slate-600">{title}</h1>
+            <div className="h-10 w-10" aria-hidden="true" />
         </div>
     );
 };

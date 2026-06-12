@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
-import {
-    ChevronRight,
-    ChevronLeft,
-    Star,
-    Brain,
-    Heart,
-    Clock,
-    Target,
-    Sparkles,
-} from 'lucide-react';
+import { ChevronRight, Brain } from 'lucide-react';
 
-// Step 1: Welcome & Introduction
-const WelcomeStep = ({ onNext }) => {
+type WelcomeStepProps = {
+    onNext: () => void;
+};
+
+export default function WelcomeStep({ onNext }: WelcomeStepProps) {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-400 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center animate-bounce-in">
@@ -52,4 +45,4 @@ const WelcomeStep = ({ onNext }) => {
             </div>
         </div>
     );
-};
+}

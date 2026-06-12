@@ -1,258 +1,241 @@
+import Image from 'next/image';
+import { Crown, ShieldCheck, Sparkles } from 'lucide-react';
 import { StickyWrapper } from '@/components/sticky-wrapper';
 import { Button } from '@/components/ui/button';
-import { UserProgress } from '@/components/user-progress';
-import Image from 'next/image';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+
+const dailyMissions = [
+    {
+        title: 'Dapatkan 10 XP',
+        progress: 0,
+        total: 10,
+        imageSrc: '/assets/yellow-xp.svg',
+        alt: 'XP',
+    },
+    {
+        title: 'Benar 5 kali berturut-turut',
+        progress: 0,
+        total: 5,
+        imageSrc: '/assets/brain-smile.png',
+        alt: 'Streak',
+    },
+    {
+        title: 'Tanya AI dalam 2 latihan',
+        progress: 0,
+        total: 2,
+        imageSrc: '/assets/artificial-intelligence.png',
+        alt: 'AI',
+    },
+];
+
+const shopItems = [
+    {
+        title: 'Isi Ulang Hati',
+        description:
+            'Dapatkan hati penuh agar kamu tetap berani mencoba tantangan.',
+        imageSrc: '/assets/heart.svg',
+        alt: 'Hati',
+        action: 'Penuh',
+        disabled: true,
+    },
+    {
+        title: 'Hati Tak Terbatas',
+        description: 'Latihan lebih lama tanpa khawatir kehabisan hati.',
+        imageSrc: '/assets/infinity-heart.png',
+        alt: 'Hati tak terbatas',
+        action: 'Coba Gratis',
+    },
+    {
+        title: 'Boost Fokus',
+        description:
+            'Tambah energi belajar untuk menyelesaikan misi harian lebih cepat.',
+        imageSrc: '/assets/gems.svg',
+        alt: 'Gems',
+        action: 'Tukar 200',
+    },
+];
 
 const ShopPage = () => {
     return (
-        <div className="flex flex-row-reverse gap-[56px] px-10 pt-12 bg-white min-h-screen">
-            {/* Sidebar, right side */}
+        <div className="flex flex-col gap-8 lg:flex-row-reverse lg:gap-10">
             <StickyWrapper>
-                {/* Liga Perak */}
-                <div className="mt-8 bg-white rounded-2xl shadow-lg p-7 w-[370px]">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="font-bold text-[#6c757d] text-lg">
-                            Liga Perak
-                        </span>
-                        <a
-                            href="#"
-                            className="text-sm text-[#43a1ff] font-bold hover:underline"
-                        >
-                            LIHAT LIGA
-                        </a>
+                <Card className="gap-5 border-2 border-sky-100 bg-white p-5 shadow-sm">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-extrabold uppercase tracking-wide text-sky-500">
+                                Liga Mingguan
+                            </p>
+                            <h2 className="text-xl font-extrabold text-slate-700">
+                                Liga Perak
+                            </h2>
+                        </div>
+                        <div className="flex size-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+                            <Crown className="size-6" />
+                        </div>
                     </div>
-                    <div className="flex gap-3 mt-3 items-center">
+                    <div className="flex gap-3 rounded-2xl bg-sky-50 p-4">
                         <Image
-                            src="/silver-league.png"
-                            alt="Silver League"
-                            className="w-10 h-10"
-                            width={40}
-                            height={40}
+                            src="/assets/leaderboard.svg"
+                            alt="Liga perak"
+                            width={44}
+                            height={44}
+                            className="shrink-0"
                         />
-                        <span className="text-sm text-[#6c757d]">
-                            Selesaikan satu pelajaran untuk bersaing dengan para
-                            pelajar lain di papan skor minggu ini
-                        </span>
+                        <p className="text-sm leading-6 text-slate-500">
+                            Selesaikan satu pelajaran untuk mulai bersaing
+                            dengan teman lain minggu ini.
+                        </p>
                     </div>
-                </div>
-                {/* Misi Harian */}
-                <div className="mt-6 bg-white rounded-2xl shadow-lg p-7 w-[370px]">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="font-bold text-[#6c757d] text-lg">
-                            Misi Harian
-                        </span>
-                        <a
-                            href="#"
-                            className="text-sm text-[#43a1ff] font-bold hover:underline"
-                        >
-                            LIHAT SEMUA
-                        </a>
+                    <Button variant="primaryOutline" className="w-full">
+                        Lihat Liga
+                    </Button>
+                </Card>
+
+                <Card className="gap-5 border-2 border-sky-100 bg-white p-5 shadow-sm">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-extrabold uppercase tracking-wide text-green-500">
+                                Misi Harian
+                            </p>
+                            <h2 className="text-xl font-extrabold text-slate-700">
+                                Target Hari Ini
+                            </h2>
+                        </div>
+                        <Sparkles className="size-6 text-yellow-400" />
                     </div>
-                    <div className="space-y-6 mt-4">
-                        <div className="flex items-center gap-4">
-                            <Image
-                                src="assets/yellow-xp.svg"
-                                className="w-9 h-9"
-                                alt="xp"
-                                width={36}
-                                height={36}
-                            />
-                            <div className="flex-1">
-                                <div className="text-base font-bold text-[#444]">
-                                    Dapatkan 10 XP
-                                </div>
-                                <div className="w-full h-3 rounded-full bg-[#ececec] mt-2 mb-2 overflow-hidden">
-                                    <div
-                                        className="h-3 rounded-full bg-[#ffd600]"
-                                        style={{ width: '0%' }}
-                                    ></div>
-                                </div>
-                                <div className="text-sm text-[#b2b2b2]">
-                                    0 / 10
+
+                    <div className="space-y-5">
+                        {dailyMissions.map((mission) => (
+                            <div
+                                key={mission.title}
+                                className="flex items-start gap-3"
+                            >
+                                <Image
+                                    src={mission.imageSrc}
+                                    alt={mission.alt}
+                                    width={40}
+                                    height={40}
+                                    className="shrink-0 rounded-xl"
+                                />
+                                <div className="min-w-0 flex-1">
+                                    <p className="font-extrabold leading-5 text-slate-700">
+                                        {mission.title}
+                                    </p>
+                                    <Progress
+                                        value={
+                                            (mission.progress /
+                                                mission.total) *
+                                            100
+                                        }
+                                        difficulty="medium"
+                                        className="mt-2 h-3 bg-slate-100"
+                                    />
+                                    <p className="mt-1 text-xs font-bold text-slate-400">
+                                        {mission.progress} / {mission.total}
+                                    </p>
                                 </div>
                             </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <Image
-                                src="/assets/brain-smile.png"
-                                className="w-9 h-9"
-                                alt="streak"
-                                width={36}
-                                height={36}
-                            />
-                            <div className="flex-1">
-                                <div className="text-base font-bold text-[#444]">
-                                    Benar 5 kali berturut-turut dalam 2
-                                    pelajaran
-                                </div>
-                                <div className="w-full h-3 rounded-full bg-[#ececec] mt-2 mb-2 overflow-hidden">
-                                    <div
-                                        className="h-3 rounded-full bg-[#ffd600]"
-                                        style={{ width: '0%' }}
-                                    ></div>
-                                </div>
-                                <div className="text-sm text-[#b2b2b2]">
-                                    0 / 2
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <Image
-                                src="/icon-mic.png"
-                                className="w-9 h-9"
-                                alt="mic"
-                                width={36}
-                                height={36}
-                            />
-                            <div className="flex-1">
-                                <div className="text-base font-bold text-[#444]">
-                                    Bicara dalam 7 latihan
-                                </div>
-                                <div className="w-full h-3 rounded-full bg-[#ececec] mt-2 mb-2 overflow-hidden">
-                                    <div
-                                        className="h-3 rounded-full bg-[#ffd600]"
-                                        style={{ width: '0%' }}
-                                    ></div>
-                                </div>
-                                <div className="text-sm text-[#b2b2b2]">
-                                    0 / 7
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
-                </div>
-                {/* Hapus Iklan */}
-                <Button className="mt-6 w-[370px] py-4 bg-white rounded-2xl border text-[#b6b6b6] font-bold text-base shadow">
-                    HAPUS IKLAN
+                </Card>
+
+                <Button variant="default" className="w-full justify-center">
+                    Hapus Iklan
                 </Button>
             </StickyWrapper>
-            {/* Main content */}
-            <div className="flex-1 max-w-3xl mx-auto">
-                {/* Super Banner */}
-                <div className="rounded-3xl p-8 bg-gradient-to-r from-[#25368f] to-[#7b2ff2] flex flex-col gap-4 mb-10 shadow-xl relative overflow-hidden">
-                    <Image
-                        src="/owl-super.png"
-                        alt="Super Duolingo"
-                        className="w-24 h-24 absolute -top-6 left-6"
-                        width={70}
-                        height={70}
-                    />
-                    <div className="ml-28">
-                        <div className="text-white font-bold text-2xl mb-3 leading-tight">
-                            Mulai uji coba gratis 1 minggu untuk menikmati
-                            manfaat Super eksklusif
-                        </div>
-                        <Button className="bg-white text-[#25368f] px-6 py-3 rounded-xl font-bold shadow mt-2 text-lg">
-                            MULAI 7 HARI GRATISKU
-                        </Button>
+
+            <div className="min-w-0 flex-1 space-y-8">
+                <section className="relative overflow-hidden rounded-[2rem] border-2 border-sky-100 bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-500 p-6 text-white shadow-xl sm:p-8">
+                    <div className="absolute right-6 top-6 hidden rounded-full bg-white/15 px-4 py-2 text-sm font-extrabold uppercase tracking-wide sm:block">
+                        Super AlgoFun
                     </div>
-                    <Image
-                        src="/super-badge.png"
-                        className="absolute top-6 right-7 w-20 h-10"
-                        alt="super"
-                        width={60}
-                        height={30}
-                    />
-                </div>
-                {/* Hati */}
-                <div>
-                    <div className="text-[#24292f] font-bold text-2xl mb-5">
-                        Hati
-                    </div>
-                    <div className="space-y-6">
-                        <div className="flex items-center justify-between py-6 border-t border-[#ececec]">
-                            <div className="flex items-center gap-6">
-                                <Image
-                                    src="assets/heart.svg"
-                                    alt="heart"
-                                    className="w-16 h-16"
-                                    width={50}
-                                    height={50}
-                                />
-                                <div>
-                                    <div className="font-bold text-[#444] text-lg">
-                                        Isi Ulang Hati
-                                    </div>
-                                    <div className="text-[#6c757d] text-base">
-                                        Dapatkan hati penuh agar kamu tidak
-                                        takut membuat kesalahan dalam pelajaran.
-                                    </div>
-                                </div>
-                            </div>
-                            <Button className="bg-[#ececec] text-[#b6b6b6] px-8 py-3 rounded-xl font-bold text-base">
-                                PENUH
-                            </Button>
-                        </div>
-                        <div className="flex items-center justify-between py-6 border-t border-[#ececec]">
-                            <div className="flex items-center gap-6">
-                                <Image
-                                    src="/assets/infinity-heart.png"
-                                    alt="infinite heart"
-                                    className="w-16 h-16"
-                                    width={50}
-                                    height={50}
-                                />
-                                <div>
-                                    <div className="font-bold text-[#444] text-lg">
-                                        Hati Tak Terbatas
-                                    </div>
-                                    <div className="text-[#6c757d] text-base">
-                                        Takkan lagi kehabisan hati bersama
-                                        Super!
-                                    </div>
-                                </div>
-                            </div>
-                            <Button className="bg-white border border-[#b6b6b6] text-[#7b2ff2] px-8 py-3 rounded-xl font-bold text-base">
-                                COBA GRATIS
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-                {/* Power-up */}
-                <div className="mt-12">
-                    <div className="text-[#24292f] font-bold text-2xl mb-5">
-                        Power-up
-                    </div>
-                    <div className="flex items-center justify-between py-6 border-t border-[#ececec]">
-                        <div className="flex items-center gap-6">
+                    <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center">
+                        <div className="flex size-24 shrink-0 items-center justify-center rounded-[1.75rem] bg-white/20 backdrop-blur">
                             <Image
-                                src="/streak-freeze.png"
-                                alt="streak freeze"
-                                className="w-16 h-16"
-                                width={50}
-                                height={50}
+                                src="/assets/market.png"
+                                alt="Super AlgoFun"
+                                width={76}
+                                height={76}
+                                className="drop-shadow-xl"
                             />
-                            <div>
-                                <div className="font-bold text-[#444] text-lg">
-                                    Pembeku Runtunan
-                                </div>
-                                <div className="text-[#6c757d] text-base">
-                                    Pembeku Runtunan mencegah runtunanmu hilang
-                                    meskipun tidak beraktivitas selama sehari
-                                    penuh.
-                                </div>
-                            </div>
                         </div>
-                        <div className="flex flex-col items-end gap-3">
-                            <span className="text-sm font-bold text-[#b6b6b6] bg-[#ececec] px-4 py-1.5 rounded">
-                                0 / 2 AKTIF
-                            </span>
-                            <Button className="flex gap-2 items-center text-[#43a1ff] bg-white border border-[#43a1ff] px-8 py-3 rounded-xl font-bold text-base">
-                                TUKAR
-                                <span className="flex gap-2 items-center">
-                                    <Image
-                                        src="/icon-gem.png"
-                                        alt="gem"
-                                        className="w-7 h-7"
-                                        width={28}
-                                        height={28}
-                                    />
-                                    200
-                                </span>
+                        <div className="max-w-xl">
+                            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-extrabold uppercase tracking-wide">
+                                <ShieldCheck className="size-4" />
+                                7 hari gratis
+                            </div>
+                            <h1 className="text-2xl font-extrabold leading-tight sm:text-4xl">
+                                Buka fitur Super untuk latihan yang lebih
+                                bebas.
+                            </h1>
+                            <p className="mt-3 text-sm leading-6 text-white/85 sm:text-base">
+                                Nikmati hati tak terbatas, reward ekstra, dan
+                                tantangan harian tanpa iklan.
+                            </p>
+                            <Button
+                                variant="default"
+                                className="mt-5 bg-white text-sky-600 hover:bg-sky-50"
+                            >
+                                Mulai 7 Hari Gratis
                             </Button>
                         </div>
                     </div>
-                </div>
+                </section>
+
+                <section className="rounded-3xl border-2 border-sky-100 bg-white p-5 shadow-sm sm:p-6">
+                    <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <p className="text-xs font-extrabold uppercase tracking-wide text-rose-500">
+                                Toko
+                            </p>
+                            <h2 className="text-2xl font-extrabold text-slate-800">
+                                Item Belajar
+                            </h2>
+                        </div>
+                        <p className="text-sm font-bold text-slate-400">
+                            Pakai gems untuk bantu petualanganmu.
+                        </p>
+                    </div>
+
+                    <div className="divide-y-2 divide-sky-50">
+                        {shopItems.map((item) => (
+                            <div
+                                key={item.title}
+                                className="flex flex-col gap-4 py-5 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <Image
+                                        src={item.imageSrc}
+                                        alt={item.alt}
+                                        width={64}
+                                        height={64}
+                                        className="size-16 shrink-0 rounded-2xl object-contain"
+                                    />
+                                    <div>
+                                        <h3 className="text-lg font-extrabold text-slate-700">
+                                            {item.title}
+                                        </h3>
+                                        <p className="max-w-xl text-sm leading-6 text-slate-500">
+                                            {item.description}
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button
+                                    variant={
+                                        item.disabled
+                                            ? 'default'
+                                            : 'primaryOutline'
+                                    }
+                                    disabled={item.disabled}
+                                    className="w-full sm:w-auto"
+                                >
+                                    {item.action}
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                </section>
             </div>
         </div>
     );

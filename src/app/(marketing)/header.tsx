@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 const Header = () => {
@@ -22,28 +23,30 @@ const Header = () => {
 
     return (
         <header
-            className={`sticky top-0 z-50 h-20 w-full px-4 transition-all duration-500 
+            className={`sticky top-0 z-50 h-20 w-full border-b px-4 transition-all duration-500
             ${
                 isScrolled
-                    ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-md shadow-md'
-                    : 'bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50 dark:bg-gray-800'
+                    ? 'border-sky-100 bg-white/80 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-gray-900/80'
+                    : 'border-transparent bg-gradient-to-br from-yellow-50 via-sky-50 to-green-50 dark:bg-gray-900'
             }`}
         >
-            <div className="lg:max-w-screen-lg mx-auto flex items-center justify-between h-full">
-                {/* Logo */}
-                <div className="pt-8 pl-4 pb-7 flex items-center gap-x-3">
+            <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
+                <Link
+                    href="/"
+                    className="rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
+                >
                     <Image
                         src="/assets/algofun-logo.png"
                         alt="AlgoFun Logo"
-                        width={150}
-                        height={150}
+                        width={154}
+                        height={56}
+                        priority
                     />
-                </div>
+                </Link>
 
-                {/* Actions */}
-                <div className="flex items-center gap-x-4">
-                    <Button size="lg" variant="secondary">
-                        Mulai
+                <div className="flex items-center gap-x-3">
+                    <Button asChild size="lg" variant="secondary">
+                        <Link href="/welcome">Mulai</Link>
                     </Button>
                 </div>
             </div>

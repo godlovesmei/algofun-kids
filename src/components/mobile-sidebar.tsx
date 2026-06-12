@@ -1,4 +1,5 @@
 import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
     Sheet,
     SheetContent,
@@ -7,26 +8,30 @@ import {
     SheetTitle,
 } from '@/components/ui/sheet';
 import { Sidebar } from '@/components/sidebar';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export const MobileSidebar = () => {
     return (
         <Sheet>
-            <SheetTrigger>
-                <Menu className="text-blue-300" />
+            <SheetTrigger asChild>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Buka menu"
+                    playSound={false}
+                    className="mr-2 shrink-0 text-sky-500 hover:bg-sky-50"
+                >
+                    <Menu className="size-6" />
+                </Button>
             </SheetTrigger>
-            <SheetContent side="bottom">
-                <SheetHeader>
-                    {/* kalau mau judul kelihatan */}
-                    {/* <SheetTitle>Menu</SheetTitle> */}
-
-                    {/* kalau ga mau kelihatan */}
-                    <VisuallyHidden>
-                        <SheetTitle>Mobile Sidebar</SheetTitle>
-                    </VisuallyHidden>
+            <SheetContent
+                side="left"
+                className="w-[min(88vw,320px)] border-r-2 border-sky-100 p-0"
+            >
+                <SheetHeader className="p-0">
+                    <SheetTitle className="sr-only">Menu AlgoFun</SheetTitle>
                 </SheetHeader>
 
-                <Sidebar />
+                <Sidebar className="h-full border-r-0 shadow-none" />
             </SheetContent>
         </Sheet>
     );

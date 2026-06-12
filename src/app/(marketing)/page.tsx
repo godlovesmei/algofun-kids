@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type TargetAndTransition, type Variants } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/accordion';
 
 export default function Home() {
-    const [animationData, setAnimationData] = useState<any | null>(null);
-    const [accordionAnim, setAccordionAnim] = useState<any | null>(null);
+    const [animationData, setAnimationData] = useState<unknown | null>(null);
+    const [accordionAnim, setAccordionAnim] = useState<unknown | null>(null);
     const [mousePosition, setMousePosition] = useState<{
         x: number;
         y: number;
@@ -43,7 +43,7 @@ export default function Home() {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    const containerVariants = {
+    const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
@@ -54,7 +54,7 @@ export default function Home() {
         },
     };
 
-    const itemVariants = {
+    const itemVariants: Variants = {
         hidden: { y: 20, opacity: 0 },
         visible: {
             y: 0,
@@ -66,7 +66,7 @@ export default function Home() {
         },
     };
 
-    const floatingAnimation = {
+    const floatingAnimation: TargetAndTransition = {
         y: [0, -10, 0],
         transition: {
             duration: 3,
@@ -123,7 +123,7 @@ export default function Home() {
                         className="h-80 w-80 relative"
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-sky-200/40 via-yellow-200/40 to-green-200/40 rounded-full blur-2xl animate-pulse"></div>
-                        {animationData && (
+                        {animationData !== null && (
                             <Lottie
                                 animationData={animationData}
                                 loop
@@ -318,7 +318,7 @@ export default function Home() {
                     </div>
                     {/* Animation Right */}
                     <div className="flex-1 w-full max-w-md flex items-center justify-center">
-                        {accordionAnim && (
+                        {accordionAnim !== null && (
                             <Lottie
                                 animationData={accordionAnim}
                                 loop

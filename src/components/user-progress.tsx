@@ -11,54 +11,54 @@ type Props = {
 
 export const UserProgress = ({ activeCourse, points, gems, hearts }: Props) => {
     return (
-        <div className="flex items-center justify-between gap-x-2 w-full">
-            <Link href="/courses">
-                <Button variant="ghost">
+        <div className="flex w-full items-center justify-end gap-1 sm:gap-2">
+            <Button variant="ghost" asChild className="h-11 px-2">
+                <Link href="/courses" aria-label="Pilih materi">
                     <Image
                         src={activeCourse.imageSrc}
                         alt={activeCourse.title}
-                        className="rounded-md border"
+                        className="rounded-xl border-2 border-sky-100 bg-white p-1"
                         width={32}
                         height={32}
                     />
-                </Button>
-            </Link>
-            <Link href="/shop">
-                <Button variant="ghost" className="text-orange-500">
+                </Link>
+            </Button>
+            <Button variant="ghost" asChild className="h-11 px-2 text-orange-500">
+                <Link href="/shop" aria-label={`${points} poin`}>
                     <Image
                         src="/assets/yellow-xp.svg"
                         height={22}
                         width={22}
                         alt="Points"
-                        className="mr-2"
+                        className="mr-1 sm:mr-2"
                     />
-                    {points}
-                </Button>
-            </Link>
-            <Link href="/shop">
-                <Button variant="ghost" className="text-blue-500">
+                    <span>{points}</span>
+                </Link>
+            </Button>
+            <Button variant="ghost" asChild className="h-11 px-2 text-blue-500">
+                <Link href="/shop" aria-label={`${gems} gems`}>
                     <Image
                         src="/assets/gems.svg"
                         height={25}
                         width={25}
                         alt="Gems"
-                        className="mr-2"
+                        className="mr-1 sm:mr-2"
                     />
-                    {gems}
-                </Button>
-            </Link>
-            <Link href="/shop">
-                <Button variant="ghost" className="text-rose-500">
+                    <span>{gems}</span>
+                </Link>
+            </Button>
+            <Button variant="ghost" asChild className="h-11 px-2 text-rose-500">
+                <Link href="/shop" aria-label={`${hearts} hati`}>
                     <Image
                         src="/assets/heart.svg"
                         height={30}
                         width={30}
                         alt="Hearts"
-                        className="mr-2"
+                        className="mr-1 sm:mr-2"
                     />
-                    {hearts}
-                </Button>
-            </Link>
+                    <span>{hearts}</span>
+                </Link>
+            </Button>
         </div>
     );
 };

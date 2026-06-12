@@ -1,9 +1,10 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { StickyWrapper } from '@/components/sticky-wrapper';
 import { Button } from '@/components/ui/button';
-import { Send } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Bot, Send, Sparkles } from 'lucide-react';
 
 const dummyHistory = [
     { id: 1, role: 'user', text: 'Apa itu bilangan prima?' },
@@ -29,57 +30,80 @@ const AskAiPage = () => {
     }, []);
 
     return (
-        <div className="flex justify-center w-full min-h-[80vh] mx-auto">
-            <StickyWrapper>
-                <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl flex flex-col h-[70vh]">
-                    {/* Header */}
-                    <div className="p-6 border-b bg-white rounded-t-2xl">
-                        <h1 className="text-2xl font-bold">Tanya AI</h1>
-                        <p className="text-muted-foreground text-sm mt-1">
-                            Ajukan pertanyaan apa pun seputar materi atau
-                            tugasmu, dan AI akan membantumu!
+        <div className="mx-auto flex min-h-[calc(100svh-112px)] w-full max-w-4xl flex-col gap-5">
+            <div className="rounded-3xl border-2 border-sky-100 bg-white/90 p-5 shadow-sm sm:p-6">
+                <div className="flex items-start gap-4">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-sky-100 text-sky-500">
+                        <Bot className="size-6" />
+                    </div>
+                    <div>
+                        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-yellow-100 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-yellow-700">
+                            <Sparkles className="size-3.5" />
+                            Teman belajar AI
+                        </div>
+                        <h1 className="text-2xl font-extrabold text-slate-800 sm:text-3xl">
+                            Tanya AI
+                        </h1>
+                        <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
+                            Ajukan pertanyaan seputar materi, tugas, atau
+                            latihan logika. Jawaban dibuat ringkas agar mudah
+                            diikuti anak.
                         </p>
                     </div>
-                    {/* Chat History */}
-                    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-[#f8f9fa]">
-                        {dummyHistory.map((msg) => (
-                            <div
-                                key={msg.id}
-                                className={`flex ${
-                                    msg.role === 'user'
-                                        ? 'justify-end'
-                                        : 'justify-start'
-                                }`}
-                            >
+                </div>
+            </div>
+
+            <Card className="min-h-[560px] overflow-hidden border-2 border-sky-100 bg-white p-0 shadow-sm">
+                <div className="flex min-h-[560px] flex-1 flex-col">
+                    <div className="flex-1 space-y-4 overflow-y-auto bg-gradient-to-b from-sky-50/70 to-white px-4 py-5 sm:px-6">
+                        {dummyHistory.map((msg) => {
+                            const isUser = msg.role === 'user';
+
+                            return (
                                 <div
-                                    className={`px-4 py-2 rounded-lg max-w-[70%] text-base ${
-                                        msg.role === 'user'
-                                            ? 'bg-blue-500 text-white'
-                                            : 'bg-gray-200 text-gray-800'
+                                    key={msg.id}
+                                    className={`flex ${
+                                        isUser
+                                            ? 'justify-end'
+                                            : 'justify-start'
                                     }`}
                                 >
-                                    {msg.text}
+                                    <div
+                                        className={`max-w-[85%] rounded-3xl px-4 py-3 text-sm leading-6 shadow-sm sm:max-w-[72%] sm:text-base ${
+                                            isUser
+                                                ? 'rounded-br-lg bg-sky-500 text-white'
+                                                : 'rounded-bl-lg border-2 border-sky-100 bg-white text-slate-700'
+                                        }`}
+                                    >
+                                        {msg.text}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                         <div ref={chatEndRef} />
                     </div>
-                    {/* Input */}
-                    <form className="border-t bg-white px-4 py-3 flex gap-2 rounded-b-2xl">
-                        <input
+
+                    <form className="flex gap-2 border-t-2 border-sky-100 bg-white p-3 sm:p-4">
+                        <label className="sr-only" htmlFor="ai-question">
+                            Pertanyaan untuk AI
+                        </label>
+                        <Input
+                            id="ai-question"
                             type="text"
                             placeholder="Ketik pertanyaanmu di sini..."
-                            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                            className="h-12 rounded-2xl border-2 bg-white text-base"
                         />
                         <Button
                             type="submit"
-                            className="flex gap-1 items-center"
+                            variant="secondary"
+                            className="h-12 shrink-0 px-4 sm:px-6"
                         >
-                            <Send className="w-4 h-4 mr-1" /> Kirim
+                            <Send className="size-4 sm:mr-1" />
+                            <span className="hidden sm:inline">Kirim</span>
                         </Button>
                     </form>
                 </div>
-            </StickyWrapper>
+            </Card>
         </div>
     );
 };

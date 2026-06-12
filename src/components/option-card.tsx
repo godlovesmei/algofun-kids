@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 
 interface OptionCardProps {
     icon: React.ReactNode;
@@ -19,13 +20,25 @@ const OptionCard: React.FC<OptionCardProps> = ({
     return (
         <Button
             onClick={onClick}
-            // kalau dipilih, pakai variant "primary", kalau nggak "default"
             variant={isSelected ? 'primary' : 'default'}
             size="lg"
-            className={`w-full justify-start rounded-2xl ${className}`}
+            aria-pressed={isSelected}
+            className={cn(
+                'h-auto min-h-14 w-full justify-start rounded-2xl px-4 py-3 text-left',
+                className
+            )}
         >
-            <div className="text-2xl">{icon}</div>
-            <span className="font-medium text-gray-700 flex-1">{title}</span>
+            <div className="text-2xl" aria-hidden="true">
+                {icon}
+            </div>
+            <span
+                className={cn(
+                    'flex-1 text-base font-extrabold',
+                    isSelected ? 'text-white' : 'text-slate-600'
+                )}
+            >
+                {title}
+            </span>
         </Button>
     );
 };

@@ -2,157 +2,101 @@ import Link from 'next/link';
 import {
     FaFacebookF,
     FaInstagram,
-    FaTwitter,
-    FaPinterest,
     FaXTwitter,
 } from 'react-icons/fa6';
 import { PiBookOpenTextLight } from 'react-icons/pi';
 
+const footerColumns = [
+    {
+        title: 'Produk',
+        links: ['Belajar', 'Latihan', 'Tanya AI', 'Toko'],
+    },
+    {
+        title: 'Dukungan',
+        links: ['Pusat Bantuan', 'Keamanan Anak', 'Privasi', 'Kontak'],
+    },
+    {
+        title: 'Komunitas',
+        links: ['Untuk Orang Tua', 'Untuk Guru', 'Cerita Pengguna', 'FAQ'],
+    },
+];
+
 const Footer = () => {
     return (
-        <footer className="bg-[rgb(125,197,238)] text-white py-10 px-6">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-                {/* Left Section - Logo & App Buttons */}
-                <div className="flex flex-col items-center md:items-start gap-4">
+        <footer className="border-t border-sky-100 bg-sky-500 px-6 py-10 text-white">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-[1.3fr_repeat(3,1fr)]">
+                <div className="flex flex-col items-start gap-4">
                     <div className="flex items-center gap-2">
-                        <div className="bg-white p-2 rounded-full shadow-md">
+                        <div className="rounded-full bg-white p-2 shadow-md">
                             <PiBookOpenTextLight className="text-[rgb(125,197,238)] text-2xl" />
                         </div>
                         <h1 className="text-xl font-bold">AlgoFun Kids</h1>
                     </div>
-
-                    {/* App Buttons */}
-                    <div className="flex flex-col gap-2">
+                    <p className="max-w-xs text-sm leading-6 text-white/85">
+                        Teman belajar algoritma untuk anak SD dengan tantangan
+                        logika, hadiah kecil, dan pengalaman visual yang
+                        menyenangkan.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
                         <Link
-                            href="#"
-                            className="border border-white px-4 py-2 rounded-md text-sm hover:bg-white hover:text-[rgb(125,197,238)] transition"
+                            href="/welcome"
+                            className="rounded-xl border border-white px-4 py-2 text-sm font-bold transition hover:bg-white hover:text-sky-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40"
                         >
-                            Get it on Google Play
+                            Mulai Belajar
                         </Link>
                         <Link
-                            href="#"
-                            className="border border-white px-4 py-2 rounded-md text-sm hover:bg-white hover:text-[rgb(125,197,238)] transition"
+                            href="/login"
+                            className="rounded-xl border border-white/70 px-4 py-2 text-sm font-bold transition hover:bg-white hover:text-sky-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40"
                         >
-                            Download on the App Store
+                            Masuk
                         </Link>
                     </div>
                 </div>
 
-                {/* Contact */}
-                <div>
-                    <h2 className="font-semibold mb-3">Contact</h2>
-                    <ul className="space-y-2 text-sm">
-                        <li>
-                            <Link href="#">Contact Us</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Press Kit</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Careers</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Privacy Policy</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Terms & Conditions</Link>
-                        </li>
-                    </ul>
-                </div>
-
-                {/* More */}
-                <div>
-                    <h2 className="font-semibold mb-3">More</h2>
-                    <ul className="space-y-2 text-sm">
-                        <li>
-                            <Link href="#">Blog</Link>
-                        </li>
-                        <li>
-                            <Link href="#">About</Link>
-                        </li>
-                        <li>
-                            <Link href="#">FAQ</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Creators</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Educators Community</Link>
-                        </li>
-                    </ul>
-                </div>
-
-                {/* Learn */}
-                <div>
-                    <h2 className="font-semibold mb-3">Learn</h2>
-                    <ul className="space-y-2 text-sm">
-                        <li>
-                            <Link href="#">Math</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Language Studies</Link>
-                        </li>
-                        <li>
-                            <Link href="#">The World Around Us</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Social Skills</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Music & Arts</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Social Studies</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Therapy</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Early Childhood</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Stories</Link>
-                        </li>
-                    </ul>
-                </div>
+                {footerColumns.map((column) => (
+                    <div key={column.title}>
+                        <h2 className="mb-3 font-extrabold">{column.title}</h2>
+                        <ul className="space-y-2 text-sm text-white/85">
+                            {column.links.map((item) => (
+                                <li key={item}>
+                                    <Link
+                                        href="#"
+                                        className="transition hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                                    >
+                                        {item}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
             </div>
 
-            {/* Social Media */}
-            <div className="mt-10 flex justify-center gap-6">
+            <div className="mt-10 flex justify-center gap-4">
                 <Link
                     href="#"
-                    className="text-2xl hover:text-gray-200 transition"
+                    aria-label="Facebook AlgoFun"
+                    className="rounded-full p-2 text-2xl transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30"
                 >
                     <FaFacebookF />
                 </Link>
                 <Link
                     href="#"
-                    className="text-2xl hover:text-gray-200 transition"
+                    aria-label="Instagram AlgoFun"
+                    className="rounded-full p-2 text-2xl transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30"
                 >
                     <FaInstagram />
                 </Link>
                 <Link
                     href="#"
-                    className="text-2xl hover:text-gray-200 transition"
-                >
-                    <FaPinterest />
-                </Link>
-                <Link
-                    href="#"
-                    className="text-2xl hover:text-gray-200 transition"
+                    aria-label="X AlgoFun"
+                    className="rounded-full p-2 text-2xl transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30"
                 >
                     <FaXTwitter />
                 </Link>
-                <Link
-                    href="#"
-                    className="text-2xl hover:text-gray-200 transition"
-                >
-                    <FaTwitter />
-                </Link>
             </div>
 
-            {/* Copyright */}
-            <p className="text-center text-xs mt-6 opacity-80">
+            <p className="mt-6 text-center text-xs text-white/75">
                 © {new Date().getFullYear()} AlgoFun Kids. All rights reserved.
             </p>
         </footer>

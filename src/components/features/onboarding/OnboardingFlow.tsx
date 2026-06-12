@@ -19,17 +19,32 @@ import {
     Gamepad2,
 } from 'lucide-react';
 
+const initialAnswers = {
+    grade: '',
+    experience: '',
+    learningStyle: '',
+    interests: '',
+    goals: '',
+};
+
+type QuestionId = keyof typeof initialAnswers;
+
+type Question = {
+    id: QuestionId;
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+    options: {
+        value: string;
+        label: string;
+    }[];
+};
+
 const OnboardingFlow = () => {
     const [currentStep, setCurrentStep] = useState(0);
-    const [answers, setAnswers] = useState({
-        grade: '',
-        experience: '',
-        learningStyle: '',
-        interests: '',
-        goals: '',
-    });
+    const [answers, setAnswers] = useState(initialAnswers);
 
-    const questions = [
+    const questions: Question[] = [
         {
             id: 'grade',
             title: 'Kelas Berapa Kamu Sekarang?',
@@ -112,7 +127,7 @@ const OnboardingFlow = () => {
         },
     ];
 
-    const handleAnswerChange = (questionId, value) => {
+    const handleAnswerChange = (questionId: QuestionId, value: string) => {
         setAnswers((prev) => ({
             ...prev,
             [questionId]: value,

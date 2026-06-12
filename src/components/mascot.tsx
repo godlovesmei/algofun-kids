@@ -3,11 +3,9 @@ import React from 'react';
 const DuolingoMascot: React.FC = () => {
     return (
         <div className="flex flex-col items-center mb-8">
-            <div className="w-20 h-20 bg-green-500 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-green-500 shadow-lg">
                 <div className="relative">
-                    {/* Duo's face */}
                     <div className="w-12 h-12 relative">
-                        {/* Eyes */}
                         <div className="absolute top-1 left-1 w-3 h-4 bg-white rounded-full">
                             <div className="w-2 h-2 bg-black rounded-full mt-0.5 ml-0.5"></div>
                         </div>
@@ -23,11 +21,11 @@ const DuolingoMascot: React.FC = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl px-6 py-3 shadow-md relative">
-                <p className="text-gray-700 font-medium">
-                    Lets unlock new opportunities for you!
+            <div className="relative rounded-2xl border-2 border-sky-100 bg-white px-6 py-3 shadow-sm">
+                <p className="font-bold text-slate-700">
+                    Pilih alasan belajarmu, nanti misi Algofun akan terasa
+                    lebih pas.
                 </p>
-                {/* Speech bubble tail */}
                 <div className="absolute -top-2 left-8 w-0 h-0 border-l-4 border-r-4 border-b-4 border-l-transparent border-r-transparent border-b-white"></div>
             </div>
         </div>

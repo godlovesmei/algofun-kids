@@ -13,25 +13,23 @@ const Footer: React.FC<FooterProps> = ({
     description,
 }) => {
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-            <div className="max-w-lg mx-auto px-6 py-8 space-y-6">
-                {/* Penjelasan */}
+        <div className="fixed bottom-0 left-0 right-0 border-t-2 border-sky-100 bg-white/95 backdrop-blur">
+            <div className="mx-auto max-w-lg space-y-4 px-6 py-5">
                 {description && (
-                    <p className="text-base text-gray-700 text-center leading-relaxed">
+                    <p className="text-center text-base leading-relaxed text-slate-600">
                         {description}
                     </p>
                 )}
 
-                {/* Tombol */}
                 <div className="flex">
                     <Button
                         onClick={onContinue}
                         disabled={isDisabled}
                         variant={isDisabled ? 'default' : 'secondary'}
                         size="lg"
-                        className="ml-auto h-16 px-10 text-xl rounded-2xl shadow-lg"
+                        className="ml-auto h-14 px-8 text-lg shadow-lg"
                     >
-                        CONTINUE
+                        LANJUT
                     </Button>
                 </div>
             </div>

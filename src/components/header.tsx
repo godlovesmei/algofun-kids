@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 interface HeaderProps {
     progress?: number;
@@ -8,35 +9,30 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ progress = 0, onBack }) => {
     return (
-        <div className="bg-white border-b border-gray-200 px-4 py-3">
+        <div className="border-b-2 border-sky-100 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
             <div className="max-w-lg mx-auto flex items-center">
                 {onBack && (
                     <Button
                         onClick={onBack}
-                        className="p-2 mr-3 hover:bg-gray-100 rounded-full transition-colors"
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Kembali"
+                        className="mr-3 rounded-full"
                     >
-                        <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            className="text-gray-600"
-                        >
-                            <path
-                                d="M15 18L9 12L15 6"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
+                        <ArrowLeft className="size-5 text-slate-500" />
                     </Button>
                 )}
 
                 <div className="flex-1">
-                    <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                        className="h-3 w-full overflow-hidden rounded-full bg-sky-100"
+                        role="progressbar"
+                        aria-valuenow={progress}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                    >
                         <div
-                            className="bg-green-500 h-3 rounded-full transition-all duration-300"
+                            className="h-full rounded-full bg-green-500 transition-all duration-300"
                             style={{ width: `${progress}%` }}
                         />
                     </div>
